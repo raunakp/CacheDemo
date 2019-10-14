@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		D349BF52235372AC00071843 /* LRUCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D349BF51235372AC00071843 /* LRUCacheTests.swift */; };
+		D349BF5623538D2600071843 /* Download.swift in Sources */ = {isa = PBXBuildFile; fileRef = D349BF5523538D2600071843 /* Download.swift */; };
+		D349BF592354194100071843 /* DownloadManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D349BF582354194100071843 /* DownloadManagerTests.swift */; };
 		D3EB0E49235344E6002EF6A6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3EB0E48235344E6002EF6A6 /* AppDelegate.swift */; };
 		D3EB0E4B235344E6002EF6A6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3EB0E4A235344E6002EF6A6 /* SceneDelegate.swift */; };
 		D3EB0E4D235344E6002EF6A6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3EB0E4C235344E6002EF6A6 /* ViewController.swift */; };
@@ -38,6 +40,8 @@
 
 /* Begin PBXFileReference section */
 		D349BF51235372AC00071843 /* LRUCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LRUCacheTests.swift; sourceTree = "<group>"; };
+		D349BF5523538D2600071843 /* Download.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Download.swift; sourceTree = "<group>"; };
+		D349BF582354194100071843 /* DownloadManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManagerTests.swift; sourceTree = "<group>"; };
 		D3EB0E45235344E6002EF6A6 /* CacheDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CacheDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D3EB0E48235344E6002EF6A6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D3EB0E4A235344E6002EF6A6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -83,6 +87,7 @@
 		D3EB0E3C235344E6002EF6A6 = {
 			isa = PBXGroup;
 			children = (
+				D349BF5523538D2600071843 /* Download.swift */,
 				D3EB0E78235344F5002EF6A6 /* LRUCache */,
 				D3EB0E47235344E6002EF6A6 /* CacheDemo */,
 				D3EB0E5E235344EA002EF6A6 /* CacheDemoTests */,
@@ -121,6 +126,7 @@
 				D3EB0E5F235344EA002EF6A6 /* CacheDemoTests.swift */,
 				D3EB0E61235344EA002EF6A6 /* Info.plist */,
 				D349BF51235372AC00071843 /* LRUCacheTests.swift */,
+				D349BF582354194100071843 /* DownloadManagerTests.swift */,
 			);
 			path = CacheDemoTests;
 			sourceTree = "<group>";
@@ -277,6 +283,7 @@
 				D3EB0E7A23534529002EF6A6 /* LRUCache.swift in Sources */,
 				D3EB0E49235344E6002EF6A6 /* AppDelegate.swift in Sources */,
 				D3EB0E4B235344E6002EF6A6 /* SceneDelegate.swift in Sources */,
+				D349BF5623538D2600071843 /* Download.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,6 +291,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D349BF592354194100071843 /* DownloadManagerTests.swift in Sources */,
 				D349BF52235372AC00071843 /* LRUCacheTests.swift in Sources */,
 				D3EB0E60235344EA002EF6A6 /* CacheDemoTests.swift in Sources */,
 			);
