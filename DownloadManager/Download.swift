@@ -1,11 +1,3 @@
-//
-//  Download.swift
-//  CacheDemo
-//
-//  Created by Raunak Poddar on 13/10/19.
-//  Copyright © 2019 Raunak. All rights reserved.
-//
-
 import Foundation
 
 fileprivate enum DownloadItemState {
@@ -24,7 +16,17 @@ fileprivate class DownloadItem {
 
 class DownloadManager {
     
-    fileprivate var cache = LRUCache()
+    fileprivate let queue = DispatchQueue.init(label: "DownloadManager")
+    
+    fileprivate lazy var cache: LRUCache = {
+        let c = LRUCache()
+        c.setCacheCapacity(capacity: 20)
+        return c
+    }()
+    
+    func setCacheCapacity(capacity: Int) {
+        cache.setCacheCapacity(capacity: capacity)
+    }
     
     func clearCache() {
         cache.removeAll()
@@ -33,54 +35,51 @@ class DownloadManager {
     fileprivate var downloadOperations = [String: ItemDownloadOperation]()
     
     func cancelAll() {
-        downloadQueue.cancelAllOperations()
-        downloadOperations.removeAll()
+        queue.async { [weak self] in
+            self?.downloadQueue.cancelAllOperations()
+            self?.downloadOperations.removeAll()
+        }
     }
     
     private lazy var downloadQueue: OperationQueue = {
-        var queue = OperationQueue()
-        queue.name = "Download queue"
-        queue.maxConcurrentOperationCount = 10
-        return queue
+        var opQueue = OperationQueue()
+        opQueue.name = "Download queue"
+        opQueue.maxConcurrentOperationCount = 10
+        return opQueue
     }()
     
     func downloadItem(atURL url: URL, completionHandler: @escaping (Data?) -> ()) -> ItemDownloadRequest? {
         var downloadRequest: ItemDownloadRequest?
-        
-        if let val = cache.value(forKey: url.absoluteString) {
-            completionHandler(val as? Data)
-            downloadRequest = nil
-        } else if let pendingOp = downloadOperations[url.absoluteString] {
-            downloadRequest = pendingOp.downloadRequest!
-            downloadRequest?.increaseRequestCount()
-            downloadRequest?.addCompletionHandler(completionHandler: completionHandler)
-        } else {
-            let item = DownloadItem.init(url: url)
-            let operation = ItemDownloadOperation.init(item: item)
-            downloadOperations[item.url.absoluteString] = operation
-            downloadRequest = ItemDownloadRequest.init(downloadOp: operation)
-            operation.downloadRequest = downloadRequest
-            downloadRequest?.addCompletionHandler(completionHandler: completionHandler)
-            downloadQueue.addOperation(operation)
+        queue.sync {
+            if let val = cache.value(forKey: url.absoluteString) {
+                print("hit")
+                completionHandler(val as? Data)
+                downloadRequest = nil
+            } else if let pendingOp = downloadOperations[url.absoluteString] {
+                print("missed")
+                let commonDownloadRequest = pendingOp.commonDownloadRequest!
+                downloadRequest = commonDownloadRequest.addRequest(completionHandler: completionHandler)
+            } else {
+                print("queued")
+                let item = DownloadItem.init(url: url)
+                let operation = ItemDownloadOperation.init(item: item)
+                downloadOperations[item.url.absoluteString] = operation
+                
+                let commonDownloadRequest = CommonDownloadRequest.init(downloadOp: operation)
+                commonDownloadRequest.downloadManager = self
+                operation.commonDownloadRequest = commonDownloadRequest
+                downloadRequest = commonDownloadRequest.addRequest(completionHandler: completionHandler)
+                downloadQueue.addOperation(operation)
+            }
         }
         
-        downloadRequest?.downloadManager = self
-        downloadRequest?.addCompletionHandler(completionHandler: completionHandler)
         return downloadRequest
     }
 }
 
-class ItemDownloadRequest {
+fileprivate class CommonDownloadRequest {
     
-    private var completionHandlers = [(Data?) -> ()]()
-    
-    fileprivate func addCompletionHandler(completionHandler: @escaping (Data?) -> ()) {
-        self.completionHandlers.append(completionHandler)
-    }
-    
-    func cancel() {
-        self.decreaseRequestCount()
-    }
+    private var maxReqId = 0
     
     private weak var downloadOperation: ItemDownloadOperation?
     
@@ -88,25 +87,53 @@ class ItemDownloadRequest {
     
     fileprivate init(downloadOp: ItemDownloadOperation) {
         self.downloadOperation = downloadOp
+        
         downloadOp.completionBlock = {  [weak self] in
+            
             guard let self = self else {
                 return
             }
-            if let data = downloadOp.downloadItem.data {
-                self.downloadManager?.cache.set(value: data, key: downloadOp.downloadItem.url.absoluteString)
-            }
             
-            for handler in self.completionHandlers {
-                handler(downloadOp.downloadItem.data)
+            if let q = self.downloadManager?.queue {
+                q.async {
+                    self.downloadManager?.downloadOperations.removeValue(forKey: downloadOp.downloadItem.url.absoluteString)
+                    if let data = downloadOp.downloadItem.data {
+                        self.downloadManager?.cache.set(value: data, key: downloadOp.downloadItem.url.absoluteString)
+                    }
+                    
+                    for request in self.requests {
+                        DispatchQueue.main.async {
+                            request?.completionHandler?(downloadOp.downloadItem.data)
+                        }
+                    }
+                }
             }
         }
     }
     
-    fileprivate func increaseRequestCount() {
+    fileprivate func addRequest(completionHandler: @escaping (Data?) -> ()) -> ItemDownloadRequest {
+        let itemDownloadRequest = ItemDownloadRequest.init(reqId: maxReqId)
+        itemDownloadRequest.completionHandler = completionHandler
+        itemDownloadRequest.commonDownloadRequest = self
+        requests.append(itemDownloadRequest)
+        
+        return itemDownloadRequest
+    }
+    
+    private var requests = [ItemDownloadRequest?]()
+    
+    func cancel(itemDownloadRequest: ItemDownloadRequest) {
+        downloadManager?.queue.async { [weak self] in
+            self?.requests[itemDownloadRequest.reqId] = nil
+            self?.decreaseRequestCount()
+        }
+    }
+    
+    private func increaseRequestCount() {
         downloadOperation?.increaseRequestCount()
     }
     
-    fileprivate func decreaseRequestCount() {
+    private func decreaseRequestCount() {
         if let downloadOperation = downloadOperation {
             downloadOperation.decreaseRequestCount()
             if downloadOperation.isCancelled {
@@ -116,9 +143,26 @@ class ItemDownloadRequest {
     }
 }
 
+class ItemDownloadRequest {
+    
+    fileprivate let reqId: Int!
+    
+    fileprivate weak var commonDownloadRequest: CommonDownloadRequest?
+    
+    fileprivate var completionHandler: ((Data?) -> ())?
+    
+    func cancel() {
+        self.commonDownloadRequest?.cancel(itemDownloadRequest: self)
+    }
+    
+    init(reqId: Int) {
+        self.reqId = reqId
+    }
+}
+
 fileprivate class ItemDownloadOperation: Operation {
     
-    var downloadRequest: ItemDownloadRequest!
+    var commonDownloadRequest: CommonDownloadRequest!
     
     let downloadItem: DownloadItem
     
@@ -143,15 +187,25 @@ fileprivate class ItemDownloadOperation: Operation {
         if isCancelled {
             return
         }
-        
-        guard let data = try? Data(contentsOf: downloadItem.url) else { return }
-        
-        if !data.isEmpty {
-            downloadItem.data = data
-            downloadItem.state = .downloaded
-        } else {
-            downloadItem.data = nil
-            downloadItem.state = .failed
+        let semaphore = DispatchSemaphore(value: 0)
+        let config = URLSessionConfiguration.default
+        let session = URLSession(configuration: config)
+        let urlRequest = URLRequest.init(url: downloadItem.url,
+                                         cachePolicy: .reloadIgnoringLocalCacheData,
+                                         timeoutInterval: 3.0)
+        let task = session.dataTask(with: urlRequest) { [weak self] (data, response, error) in
+            guard let self = self else { return }
+            if let data = data {
+                self.downloadItem.data = data
+                self.downloadItem.state = .downloaded
+            } else {
+                self.downloadItem.data = nil
+                self.downloadItem.state = .failed
+            }
+            semaphore.signal()
         }
+        task.resume()
+        _ = semaphore.wait(timeout: .distantFuture)
+//        guard let data = try? Data(contentsOf: downloadItem.url) else { return }
     }
 }

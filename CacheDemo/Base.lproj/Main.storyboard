@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="8JI-Uw-pMI">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="1Gr-TR-7nC">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -29,6 +30,9 @@
                                     <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </collectionViewCellContentView>
+                                <connections>
+                                    <segue destination="tuO-50-vTQ" kind="show" id="WA1-D6-2zI"/>
+                                </connections>
                             </collectionViewCell>
                         </cells>
                         <connections>
@@ -36,10 +40,59 @@
                             <outlet property="delegate" destination="8JI-Uw-pMI" id="TOF-vk-QUy"/>
                         </connections>
                     </collectionView>
+                    <navigationItem key="navigationItem" id="ppi-Qt-FkK"/>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Tfg-ei-XbI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="135" y="784"/>
+            <point key="canvasLocation" x="1044.9275362318842" y="783.48214285714278"/>
+        </scene>
+        <!--Photo View Controller-->
+        <scene sceneID="bMu-ej-qzp">
+            <objects>
+                <viewController storyboardIdentifier="PhotoViewController" id="tuO-50-vTQ" customClass="PhotoViewController" customModule="CacheDemo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Cox-kz-fhH">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="pgt-4o-9OL" customClass="RPImageView" customModule="CacheDemo" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="44" width="414" height="852"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="pgt-4o-9OL" firstAttribute="bottom" secondItem="HYW-RI-Mvf" secondAttribute="bottom" constant="34" id="6bq-8N-qAw"/>
+                            <constraint firstItem="pgt-4o-9OL" firstAttribute="leading" secondItem="HYW-RI-Mvf" secondAttribute="leading" id="GZO-Sx-LGf"/>
+                            <constraint firstItem="HYW-RI-Mvf" firstAttribute="top" secondItem="pgt-4o-9OL" secondAttribute="top" constant="44" id="Qdo-8G-KTj"/>
+                            <constraint firstItem="HYW-RI-Mvf" firstAttribute="trailing" secondItem="pgt-4o-9OL" secondAttribute="trailing" id="faU-X8-WDp"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="HYW-RI-Mvf"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="NGp-Xi-Sia"/>
+                    <connections>
+                        <outlet property="imageView" destination="pgt-4o-9OL" id="jrR-l6-e9G"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Lqf-p4-Z7X" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1772.4637681159422" y="788.83928571428567"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="HCq-Ta-dV0">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="1Gr-TR-7nC" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="OHL-jW-Zez">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="8JI-Uw-pMI" kind="relationship" relationship="rootViewController" id="ES5-qI-H4a"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tru-Fd-Fu9" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="134.78260869565219" y="783.48214285714278"/>
         </scene>
     </scenes>
 </document>

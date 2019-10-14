@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D333A88123548FD8000F0A7A /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D333A88023548FD8000F0A7A /* PhotoViewController.swift */; };
 		D349BF52235372AC00071843 /* LRUCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D349BF51235372AC00071843 /* LRUCacheTests.swift */; };
 		D349BF5623538D2600071843 /* Download.swift in Sources */ = {isa = PBXBuildFile; fileRef = D349BF5523538D2600071843 /* Download.swift */; };
 		D349BF592354194100071843 /* DownloadManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D349BF582354194100071843 /* DownloadManagerTests.swift */; };
@@ -44,6 +45,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D333A88023548FD8000F0A7A /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
 		D349BF51235372AC00071843 /* LRUCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LRUCacheTests.swift; sourceTree = "<group>"; };
 		D349BF5523538D2600071843 /* Download.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Download.swift; sourceTree = "<group>"; };
 		D349BF582354194100071843 /* DownloadManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManagerTests.swift; sourceTree = "<group>"; };
@@ -138,6 +140,7 @@
 		D3EB0E47235344E6002EF6A6 /* CacheDemo */ = {
 			isa = PBXGroup;
 			children = (
+				D333A88023548FD8000F0A7A /* PhotoViewController.swift */,
 				D349BF6423544A9500071843 /* CollectionViewCell.swift */,
 				D3EB0E48235344E6002EF6A6 /* AppDelegate.swift */,
 				D3EB0E4A235344E6002EF6A6 /* SceneDelegate.swift */,
@@ -315,6 +318,7 @@
 				D3EB0E7A23534529002EF6A6 /* LRUCache.swift in Sources */,
 				D349BF6523544A9500071843 /* CollectionViewCell.swift in Sources */,
 				D3EB0E49235344E6002EF6A6 /* AppDelegate.swift in Sources */,
+				D333A88123548FD8000F0A7A /* PhotoViewController.swift in Sources */,
 				D349BF6723544B2B00071843 /* UIImageView+Cache.swift in Sources */,
 				D3EB0E4B235344E6002EF6A6 /* SceneDelegate.swift in Sources */,
 				D349BF5623538D2600071843 /* Download.swift in Sources */,
